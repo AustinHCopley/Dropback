@@ -30,12 +30,11 @@ class DropBackMLP(nn.Module):
         # save initialized parameters as one contiguous array
         self.initial_params = torch.cat([param.view(-1) for param in self.parameters() if param.requires_grad])
 
-    def freeze_params(self):
-        # get current params
+    def freeze_params(self): # called when freeze epoch ends
         all_params = torch.cat([param.view(-1) for param in self.parameters() if param.requires_grad])
         cumulative_updates = torch.zeros_like(all_params)
         idx = 0
-        for param in self.parameters():
+        for param in self.parameters(): # get cumulative gradient updates for params
             if param.requires_grad:
                 param_grad = param.grad.view(-1)
                 cumulative_updates[idx:idx+len(param_grad)] += torch.abs(param_grad)
@@ -44,9 +43,10 @@ class DropBackMLP(nn.Module):
         num_params = sum(param.numel() for param in self.parameters() if param.requires_grad)
         num_freeze = int(self.pruning_threshold * num_params)
         print(f"======== Pruned weights: {num_freeze} out of {num_params} ========")
+        # save indices of least updated params to restore from initialized vals
         self.freeze_indices = np.argsort(cumulative_updates.cpu().numpy())[:num_freeze]
 
-    def reset_frozen(self, device):
+    def reset_frozen(self, device): # restore frozen params every epoch after freezing
         idx = 0
         for param in self.parameters():
             if param.requires_grad:
