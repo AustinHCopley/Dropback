@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import numpy as np
-import matplotlib.pyplot as plt
 
 class DropBackMLP(nn.Module):
     def __init__(self, input_dim, hidden_dim, output_dim, pruning_threshold, seed):
