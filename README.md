@@ -1,15 +1,15 @@
 # Dropback
 
-Running this requires PyTorch and torchvision.
+This is an emulation of the DropBack pruning algorithm described in the research paper [Full deep neural network training on a pruned weight budget](https://proceedings.mlsys.org/paper_files/paper/2019/file/74e22712c9b50a9b43b2ae54e225888e-Paper.pdf) published in MLSys in 2019. The original emulation used the Chainer framework, but I have gone with PyTorch for this.
 
 I used PyTorch with CUDA version 2.0.1+cu117
 & torchvision version 0.15.2+cu117
 
-The data used is from MNIST and CIFAR10. These are not included in the submission, but they are optionally downloaded when running the jupyter notebooks
+The data used is from MNIST and CIFAR10
 
 Training and tests are done in jupyter notebooks because it makes it much easier for me personally to make changes and debug while keeping the runtime and without losing defined variables.
 
-But the results from every test are stored in a dictionary which is saved as a pickle file: model_results.pkl, where the dictionary is keyed by a tuple, and the values are also tuples:
+The results from every test are stored in a dictionary which is saved as a pickle file: model_results.pkl, where the dictionary is keyed by a tuple, and the values are also tuples:
 
 ```python 
 dict[(freeze_epoch: int, prune_threshold: float)] = (train_accuracies: list, validation_accuracies: list, model: DropBackMLP)
